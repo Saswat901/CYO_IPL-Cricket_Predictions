@@ -1,0 +1,2094 @@
+---
+title: |
+  | \vspace{1.5in}Indian Premier League T20 Cricket    
+  | \- Analysis & Predictions
+  | \vspace{2in}\Large Capstone Project Report
+subtitle: \vspace{1.5in}Data Science Professional Certificate Program from HarvardX      - Choose Your Own (CYO) Project  
+
+author: "Valmeti Srinivas"
+date: "03/12/2019"
+output: 
+  pdf_document:
+    toc_depth: 4
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+```
+
+\newpage
+&nbsp;
+\vspace{25pt}
+\tableofcontents
+
+\newpage
+# Acknowledgements:          
+\vspace{25pt}
+
+I have started the journey of learning R programming language and becoming a Data Scientist in April, 2019 by registering myself in HarvardX Data Science Professional Certificate Program through edX online portal.
+
+I have already submitted my Movielens movie ratings predictions report for which I was scored extremely positively.
+
+My learning journey in this program had been very exhilarating and kept me flushed with enthusiasm all the time. All the 9 courses in the program, culminating in this project are very informative and educational.   
+
+I believe personally the program is well designed and apt for data science enthusiasts to start learning. I thank the program instructor Mr.Rafael Irizarry for his superb course delivery and for sharing his data science knowledge and skills.   
+
+I also thank the course staff for their excellent technical  support through the blog posts and administrative staff for their email assistance.   
+
+It is also an opportunity for me to thank the R, R Studio, Stackoverflow, Stackexchange & Kaggle communities for their inputs in my learning quest. 
+
+I am also indebted to all programmers, developers and all others for their wonderful and dedicated contribution for the development of various packages and libraries, without which this data science project could have not been undertaken.   
+
+I would also like to thank Kaggle for providing so many wonderful and diverse data sets. It was great that I could find a latest data set on my topic of interest - Indian Premier T20 Cricket League (IPL).
+
+Lastly, I express my sincere gratitude to my fellow learners who kept me motivated with their participation in the course, interesting questions, feedback, suggestions and discussions.   
+
+
+Thanks everyone !!
+\newpage 
+
+# Introduction:          
+\vspace{12pt}
+
+Cricket, a bat and a ball game, has a history of over 300 years and is a popular and well followed sport across the world.
+
+Cricket is played between 2 teams, each with a core team of 11 players and some extra players in each match. While one team does the batting, the other team does the fielding (bowling). The team that wins the toss will decide to bat first or field first and the other team takes turns the other way around. 
+
+Currently, cricket matches are played primarily in 3 formats, 5 day test matches, 1 day 50 over matches and 20 over (T20) matches.
+
+- Test matches: 
+Initially, teams used to play matches which used to last over 3, 4, 5 or 6 days (currently 5 days is the standard) and each team can play up to 2 innings with a very few restrictions, importantly with no limitation on the time an individual team can bat for. Essentially, the team that ends up with more runs than the opponent in both of their own respective innings put together, and gets the opponent team completely out in both innings, wins the match. 
+
+  Teams composition in multi-day matches primarily used to be certain number of batsmen who can bat for long time and certain number of bowlers who can take wickets (get opponent team's batsmen out). This format of cricket was resulting in matches getting ended in no result (boring draw) even after a match was played for full 5 days (for 400+ overs). This had lead to lessening interest for the sport among people.  
+
+- One day 50 over matches:
+In order to prop up the interest for the sport among fans, a new form of cricket, called One Day matches got introduced with the match restricted to one day and each team batting once only. One Day matches are also called limited overs cricket as each team bats for a maximum of 50 overs. 
+
+  This form of One Day Cricket gained wide popularity as the matches became more exciting with almost all matches ending in a result. The format of the game made batsmen score quick runs (more runs in less number of balls they face) with some big hitting (scoring 4s & 6s), which is a major attraction for the match watching crowds. In One Day matches, the ability of a player to hit quick runs and restrict opponent from scoring runs became important criteria. This lead to teams having a few all rounders too (who can bat and also bowl), apart from just having pure batsmen and bowlers, which is the case in Test matches.
+
+- T20 matches:
+With the hectic life style that people are increasingly adopting, they have less time to watch matches even for one full day. They wanted matches that are of shorter duration, yet produce result and excitement. This subsequently lead to another format of Cricket called T20 matches, where in each team is restricted to play once and for a maximum of 20 overs only. Restricting matches to a maximum of 20 overs has become extremely attractive, as this forced batsmen to employ innovative techniques  and big hitting to score quick runs (high strike rate) and build big total scores. At the same time, the format put lot of pressure on bowlers to become more innovative and effective in restricting batsmen from scoring (low economy rate) and get them out quickly. 
+
+  Because of this limited overs pressure, each ball bowled in a T20 match has become vary valuable, with batsmen trying to score as many runs as possible and bowling team trying to restrict the batsmen from doing so. Today T20 matches are very popular across the playing nations and have become big crowd pullers.
+
+  Sensing the potential for T20 matches, The Board Of Control For Cricket In India (BCCI) had introduced Indian Premier League (IPL T20) in 2008 which is conducted once every year since then. 
+
+  IPL is played among teams in a round robin format before the top 4 teams enter the knock out stage. The tournament usually lasts for about 3 months. IPL is probably one of the highest money churning sport events in the world.  Given the prize money involved, attractive payment contracts to players, huge crowds that turn out at the stadium and the huge popularity that Cricket enjoys in India, almost all top class players around the world vie to play in IPL. 
+
+I have selected to analyse data related IPL matches, to build models and make some predictions for this project.
+
+More about Cricket in general can be found at https://en.Wikipedia.org/wiki/Cricket. 
+
+More information about IPL can be found at https://www.iplt20.com/.
+
+\newpage
+# Executive Summary:          
+\vspace{12pt}
+
+The traditional thinking of team management while selecting players for test matches is that to have a certain number of pure, good batsmen who can score more runs, certain number of pure, good bowlers who can take wickets and probably to have one or two all rounders. Obviously sticking to this kind of team selection strategy will not work in 50 over one day matches, and completely not the right approach for T20 matches. In T20 matches, every ball and every player counts and the capability of every player to bat and bowl is best exploited given each team bats for 20 overs only. While the objective and number of players remain the same, the number of overs played in T20 matches have come down by more than 10 times (from 400+ to 40) when compared to 5 day test matches. When compared to one day matches, this has come down by 2.5 times.
+
+- 1st Objective:      
+This project's main objective is to rate and rank players by their value, by their past performance in IPL T20 matches. We call them top_calibre_players.
+
+  Given the foregoing explanation, team managements can benefit if they switch their player selection approach from the traditional way to a new approach based on a player's calibre as both batsman and bowler. We provide a list of players based on their player value (playing calibre) so that IPL team managements can select best players. 
+
+- 2nd Objective:        
+We set our second objective of this project is to build a model to predict the winner of a match.     
+In T20 matches results are almost inevitable and people will be naturally interested in guessing the match winner in advance. Hence, we will build a few models to predict winner and compare them for the best "F1 score". 
+
+This project makes use of the two .csv files provided at https://www.kaggle.com/nowke9/ipldata. The data sets are downloaded and are made available at my github repo https://github.com/valmetisrinivas/CYO_IPL-Cricket_Predictions.git .
+
+
+The key steps that were undertaken in this project have been summarized as below.   
+
+- Data set-up step: Here we install/ load the required libraries, read the data files and create the required data sets.   
+
+- Methods & Analysis:
+
+  a. Data Exploration & Results: We do data exploration using various methods including visualization & perform various analysis to understand our data.   
+  
+  b. Model Building & Results: This step includes a few sub-steps as explained below.
+  
+    **1st Objective - Building a model to rank players by their playing calibre:**
+  
+    In order to achieve our first objective of ranking players by their value, we will estimate players ratings based on the below 3 criteria and arrive at the final ranking by summarizing these values into one.
+  
+    - Criteria.1: We will rate players by their batting striking rates and bowling economy rates in IPL. We call this list "top_rate_players".
+
+      For any player,
+\vspace{2pt}    
+      Batting strike rate = number of runs scored/ number of balls faced
+
+      Bowling economy rate = number of runs given/ number of balls bowled.
+    
+    - Criteria.2: We will rate players based on their contribution both in win and loss situations. We rate them based on their frequency of scoring maximum runs and dismissing maximum wickets for their teams in both matches won and lost by their teams. We call this list "top_contri_players".
+    
+    - Criteria.3: We will also rate players based on how they excel against top_20 bowlers and top_20 batsmen. We call this list "top_excel_players".
+    
+    Then we summarize all these 3 criteria to arrive at our final list of players by their value. Arriving at this list is our 1st objective. We call this list "top_calibre_players".
+
+
+    **2nd Objective - Building a model with maximum "F1 score" to predict the winner of a match:**  
+    
+    In order to achieve our second objective of predicting which team will win a match, given a set of conditions, we train and compare a few models for "F1 score".
+    
+    In machine learning classifications, confusion matrix is an important tool that helps in assessing the model strength.
+    
+    The "recall" parameter of  a confusion matrix determines the strength of a model in terms of what fraction of a team's actual wins  are model's true positive predictions. 
+    
+    The "precision" parameter of  a confusion matrix determines the strength of a model in terms of what fraction of model's total positive predictions of wins are actually true. 
+    
+    Since, we are interested in both "recall" and "precision", "F1 score", which is based on both of these parameters, is the metric that we choose to determine the strength of the various models that we build.       
+    
+    
+- Results Discussion: We will briefly discuss the performance of the models that we have built.
+
+- Conclusion: We will highlight how the final model can be used, limitations of the project and what could be the future enhancements.
+
+As one might notice, the project work includes application of various tools and techniques that I have learnt in the program courses including application of the knowledge base and skills in R - data analysis, data visualization, inference, data wrangling, data organization, regression, machine learning and modeling.
+
+Finally, apart from achieving the above stated two goals, the project work includes submitting the project report in Rmd and PDF formats along with the R Script file.
+
+\newpage
+# Data Set-up:          
+\vspace{12pt}
+
+Let us start with the installation and loading of the required R packages.
+
+
+
+```{r, load packages}
+# Load required packages
+if(!require(tidyverse))
+  install.packages("tidyverse", repos = "http://cran.us.r-project.org")
+if (!require(caret))
+  install.packages("caret", repos = "http://cran.us.r-project.org")
+if (!require(data.table))
+  install.packages("data.table", repos = "http://cran.us.r-project.org")
+if (!require(formattable))
+  install.packages("formattable", repos = "http://cran.us.r-project.org")
+```
+
+Next, we read the data sets that were downloaded from the Kaggle website into "R".
+
+
+
+```{r, read the datafiles}
+# read the .csv datafiles into R
+# Read the datafiles into R from my Github repo .
+deliveries <- read.csv("https://raw.githubusercontent.com/valmetisrinivas/CYO_IPL-Cricket_Predictions/master/data/deliveries.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+matches <- read.csv("https://raw.githubusercontent.com/valmetisrinivas/CYO_IPL-Cricket_Predictions/master/data/matches.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+```
+
+THE ABOVE CODE WILL DOWNLOAD THE DATA FILES FROM MY GITHUB REPO. IF THE ABOVE 2 LINES OF CODE DOES NOT WORK FOR YOU, U CAN FIRST CLONE THE PROJECT FROM MY GITHUB REPO AT  https://github.com/valmetisrinivas/CYO_IPL-Cricket_Predictions.git AND THEN RUN THE BELOW 3 LINES OF CODE AFTER REMOVING THE COMMENT '#' MARK INFRONT OF THEM.
+   
+```{r, read the data_files}
+# Read the datafiles into R after cloning
+# deliveries <- read.csv("./data/deliveries.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+# matches <- read.csv("./data/matches.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+```
+
+
+Before, we proceed further, let us first do some initial inspection and pre-processing of our data files.
+
+
+
+```{r, inspect data}
+# inspect variable names in both datasets
+names(matches)
+names(deliveries)
+
+# glimpse of our datasets
+glimpse(matches)
+glimpse(deliveries)
+```
+
+The "matches" dataset provides information based on match_id. That is, each observation (row) is information on a different match ever played in IPL.
+
+The "deliveries" dataset provides information on each ball delivered in each innings of each match. That is, each observation (row) provides unique information on a particular ball ever bowled in all matches in IPL until year 2019.
+
+We are interested in checking there are no duplicates or spelling mistakes in the names of teams and venues which reflect across both datasets in many variables. Let us first check that out in "deliveries" dataset.
+
+
+
+```{r}
+# Inspect variables in "deliveries" datset for spelling mistakes, errors and duplicates
+levels(as.factor(deliveries$batting_team))
+levels(as.factor(deliveries$bowling_team))
+```
+
+We can notice that there are couple of errors in the team names. "Rising Pune Supergiants" is simply "Rising Pune Supergiant" (without 's' in the end) and "Delhi Daredevils" franchise has  renamed itself as "Delhi Capitals" in later seasons of IPL. Let us correct these two details.
+
+
+```{r, preprocess data}
+# preprocess data - correct errors in team names in "deliveries" dataset
+deliveries <- deliveries %>%
+  mutate(batting_team = str_replace(batting_team, "Delhi Daredevils", "Delhi Capitals")
+  )
+deliveries <- deliveries %>%
+  mutate(batting_team = str_replace(
+      batting_team,
+      "Rising Pune Supergiants",
+      "Rising Pune Supergiant"
+    )
+  )
+
+deliveries <- deliveries %>%
+  mutate(bowling_team = str_replace(bowling_team, "Delhi Daredevils", "Delhi Capitals")
+  )
+deliveries <- deliveries %>%
+  mutate(bowling_team = str_replace(
+      bowling_team,
+      "Rising Pune Supergiants",
+      "Rising Pune Supergiant"
+    )
+  )
+```
+
+Let us check if the same type of errors exist in "matches" dataset also for team1, team2, winner, toss_winner and venue variables.
+
+
+
+```{r, inspect data, continued..}
+# Inspect variables in "matches" datset for spelling mistakes, errors and duplicates
+levels(as.factor(matches$team1))
+levels(as.factor(matches$team2))
+levels(as.factor(matches$winner))
+levels(as.factor(matches$toss_winner))
+levels(as.factor(matches$venue))
+```
+
+We see that the same errors in the "deliveries" data set also exist in matches data set under toss_winner", "winner", "team1" & "team2" variables, plus a few duplicates exist under "venue". Let us correct these details too.
+
+
+
+```{r, preprocess data, continued..}
+# preprocess data - correct errors in team names in "matches" dataset
+matches <- matches %>%
+  mutate(team1 = str_replace(
+    team1, "Delhi Daredevils", "Delhi Capitals"
+  ))
+matches <- matches %>%
+  mutate(team1 = str_replace(team1, "Rising Pune Supergiants", "Rising Pune Supergiant")
+  )
+matches <- matches %>%
+  mutate(team2 = str_replace(
+    team2, "Delhi Daredevils", "Delhi Capitals"
+  ))
+matches <- matches %>%
+  mutate(team2 = str_replace(team2, "Rising Pune Supergiants", "Rising Pune Supergiant")
+  )
+matches <- matches %>%
+  mutate(toss_winner = str_replace(
+    toss_winner, "Delhi Daredevils", "Delhi Capitals"
+  ))
+matches <- matches %>%
+  mutate(toss_winner = str_replace(toss_winner, "Rising Pune Supergiants", "Rising Pune Supergiant")
+  )
+
+matches <- matches %>%
+  mutate(winner = str_replace(
+    winner, "Delhi Daredevils", "Delhi Capitals"
+  ))
+matches <- matches %>%
+  mutate(winner = str_replace(winner, "Rising Pune Supergiants", "Rising Pune Supergiant")
+  )
+
+matches <- matches %>%
+  mutate(venue = str_replace(venue, "Feroz Shah Kotla Ground", "Feroz Shah Kotla")
+  )
+
+matches <- matches %>%
+  mutate(venue = str_replace(venue, "M Chinnaswamy Stadium", "M. Chinnaswamy Stadium")
+  )
+
+matches <- matches %>%
+  mutate(venue = str_replace(venue, "MA Chidambaram Stadium, Chepauk", "M. A. Chidambaram Stadium")
+  )
+
+matches <- matches %>%
+  mutate(venue = str_replace(venue, "Punjab Cricket Association IS Bindra Stadium, Mohali",
+        "Punjab Cricket Association Stadium, Mohali")
+  )
+
+matches <- matches %>%
+  mutate(venue = str_replace(venue, "Rajiv Gandhi Intl. Cricket Stadium", 
+        "Rajiv Gandhi International Stadium, Uppal")
+  )
+```
+
+Next, we will check if there are any missing values in our data sets.
+
+
+
+```{r}
+# Check for NAs and missing values
+sum(is.na(deliveries)) == 0
+sum(is.na(matches)) == 0
+```
+
+Luckily, we don't have missing values or NA. The data sets are relatively well pre-processed.
+
+Now, we create two data sets "mat_ds" & "del_ds" out of our "matches" & "deliveries" data sets respectively for exploration and analysis.
+
+```{r}
+# Create primary datasets
+mat_ds <- matches %>%
+  select(
+    match_id = id,
+    season,
+    city,
+    team1,
+    team2,
+    toss_winner,
+    toss_dec = toss_decision,
+    winner,
+    pom = player_of_match,
+    venue
+  ) 
+
+del_ds <- deliveries %>%
+  select(
+    inning,
+    match_id,
+    over,
+    ball,
+    batsman,
+    bowler,
+    runs = batsman_runs,
+    bat_team = batting_team,
+    bowl_team = bowling_team,
+    total_runs,
+    dismissal_kind
+  ) %>%
+  gather(role, player, batsman:bowler) %>%
+  mutate(role=as.factor(role))
+```
+
+Please note that we have rearranged the variables "batsman" and "bowler" into "role" and "player" variables in our "del_ds" data set using "gather" function for the purpose of our analysis and exploration. We shall take a note and remember in our analysis  and use of data that this step ended up in duplicating all the observations (We have double the original observations now).
+
+We have renamed "id", "toss_decision" & "Player_of_match", "batsman_runs", "batting_team" & "bowling_team" to "match_id", "toss_dec", "pom", runs, "bat_team" & "bowl_team"  respectively for convenience purpose. We also have ignored a few variables such as the day on which a match was played, umpires who officiated the match, extra runs, fielder, season etc., variables as they clearly do not have any relationship to player value.
+
+\newpage
+# Methods & Analysis - Data Exploration & Results:          
+\vspace{12pt}
+
+Let us start our exploration of data with finding out a few unique facts about our data.
+
+
+
+```{r}
+# Total players
+n_distinct(del_ds$player)
+
+# Unique teams
+n_distinct(c(unique(mat_ds$team1),unique(mat_ds$team2)))
+
+# Total venues
+n_distinct(mat_ds$venue)
+
+# Total matches played
+total_played <- mat_ds %>%
+  summarize(tot_mat_played = n())
+total_played
+
+# Total matches without win/ loss result
+total_no_results <- mat_ds %>%
+  filter(winner == "") %>%
+  summarize(tot_noresults = n())
+total_no_results
+```
+
+We can see that only 4 matches (about 0.5%) have ended up with no result (drawn), out of a total of 756 matches played in IPL. This fact vindicates our logic that T20 produces a win/ loss result almost in all matches. Compare this against the over 35% of test matches (multi-day), that ended up in a no-result (draw).
+
+Let us then start analysing the different run types scored. Let us first see which runs have been scored how many times by teams and also by batsmen.
+
+
+
+```{r}
+# number of times each different run was scored by the team
+del_ds %>%
+  filter(role == "batsman") %>%
+  group_by(run_type = total_runs) %>%
+  summarize(count = n()) %>%
+  mutate(percent = percent(count / sum(count))) %>%
+  arrange(desc(count))
+
+# number of times a batsman had scored a different run
+del_ds %>%
+  filter(role == "batsman") %>%
+  group_by(run_type = runs) %>%
+  summarize(count = n()) %>%
+  mutate(percent = percent(count / sum(count))) %>%
+  arrange(desc(count))
+```
+
+Let us check if there is a relationship between the ball number in an innings and the type of run scored on that ball. For this purpose, we will ignore 5s & 7s which are rarely scored compared to other run types and also we will limit to 120 balls, which is the normal cutoff for an innings.
+
+
+
+```{r}
+# Major run types scored on each ball and correlation between them
+runs_balls <- del_ds %>%
+  group_by(match_id, inning) %>%
+  mutate(ball_no = 1:n()) %>% 
+  ungroup() %>% 
+  filter(role == "batsman") %>%
+  filter(runs != "" & runs != "5" & runs != "7" & ball_no %in% 1: 120) %>%
+  group_by(ball_no, runs) %>% 
+  summarize(count=n()) 
+runs_balls
+
+runs_balls %>%
+  ggplot(aes(ball_no,count, col=factor(ball_no))) +
+  geom_col() +
+  scale_y_log10() +
+  facet_grid( ~ runs) +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    size = 3,
+    hjust = 1
+  ),
+  legend.position = "none")
+cor(runs_balls$runs, as.numeric(runs_balls$ball_no))
+```
+
+Clearly there is no relationship between ball number and runs scored of that ball.
+
+From the plot, we can see the peaks in 4s and 6s at the beginning of the innings is due to the 1st power play overs (6 overs), during which there are fielding restrictions and is a great opportunity for batsmen to score big runs. 4s are scored heavily in the beginning of the innings but dip during the middle of the innings around which time 1s get peaked and 2s continue to rise. This is due to the fact that batting teams try to stabilize their innings during mid overs.
+
+We can see 0s tend to fall as the innings progresses and 2s is the only one which is relatively on the increasing trend throughout the innings. We can also see the 6s, 2s and 4s scored have a slight increasing pattern towards the end of the innings.
+
+These facts indicate that teams try to bat the full 20 overs (through stabilization in mid overs) and try to score quick runs more towards the end of the innings. 
+
+
+
+As we are looking at runs scored on different balls, let us see how are they scored by batsmen on each ball, given "inning" (1st batting or 2nd batting). For this purpose, let us remove the rarest of rare run types, "5s" and "7s", a batsman ever scores.
+
+
+
+```{r}
+# Runs scored on each ball in 1st and 2nd innings
+del_ds %>%
+  group_by(match_id, inning) %>%
+  mutate(ball_no = 1:n()) %>% 
+  ungroup() %>%
+  filter(inning %in% 1:2 & role == "batsman" & runs %in% c(0,1,2,3,4,6) & ball_no %in% 1:120) %>%
+  group_by(batting_turn=as.factor(inning), ball_no, batsman_runs=as.factor(runs)) %>%
+  summarise (count=n()) %>%
+  ggplot(aes(ball_no, count, col=batsman_runs)) +
+  geom_point(size=0.5) +
+  geom_jitter() +
+  theme(legend.position = "top") +
+  facet_grid(~ batting_turn)
+```
+
+The patterns are similar in both the innings highlighting how batting innings progresses in IPL matches. 
+
+From the plot, we can also make out that irrespective of the batting turn, 0s and 1s exchange places with each other around the the initial power play (first 36 balls). The 0s seem to be steadily reducing indicating as innings progresses, batsmen try to score runs of every ball, particularly more boundaries or higher run types. While boundaries drop from high after the initial 36 balls, 1s seem to increase. The first 36 balls are called 1st power play during which fielders are mostly restricted to inner circles, thus hitting boundaries is more easy. After 36 balls, teams try to stabilize innings (not losing quick wickets), which explains increase in 1s and drop in 4s. 
+
+0s and 1s, both sharply drop towards the end of 2nd innings. This is once gain due to the fact that teams batting second try to pass the target in the last overs with some big hitting or scoring higher run types on every ball.
+
+We can also notice that the boundaries (4s & 6s) steadily increase as the innings progresses as batsmen try to finish with big hitting. However, the very small dip in boundaries towards the very end of the innings is due to the fact the teams sometimes get out well before the 120 balls.
+
+Excepting 0s and 1s, all other run types seem to have clear separation almost all the time - 4s seem to be more than 2s, 2s seem to be more than 6s and 6s seem to be more than 3s all most all the time, which is a fact shown in our previous tables.
+
+Next, we look more closely which run type (0s, 1s, 2s, 3s, 4s ,5s, 6s & 7s) was scored highest number of times on a given ball  over either of the innings.
+
+
+
+```{r}
+# Different run types, how they trend during the innings
+del_ds %>%
+  group_by(match_id, inning) %>%
+  mutate(ball_no = 1:n()) %>%
+  ungroup() %>%
+  filter (inning %in% 1:2 & role == "batsman" & ball_no %in% 1:120) %>%
+  group_by(ball_no=as.numeric(ball_no), runs = as.factor(runs)) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count)) %>%
+  arrange(ball_no) %>%
+  top_n(1) %>%
+  ggplot(aes(ball_no,count,col=runs, shape = runs)) +
+  geom_point(size = 2)
+```
+
+It is amazing to note that only 0s or 1s figure with highest counts for any ball; no other run type has the highest count for any ball. It is even more amazing to note that till about the 1st power play batsmen score more 0s than 1s on all balls, but will score more 1s than 0s, thereafter. This phenomenon is logical because batsmen try to score runs on every ball as the inning progresses and by nature 1s will be scored more often than any other run type. However, it is remarkable to see it actually happening.
+
+At the end of a match, an award for the player of the match will be given for the player who performed best in that match. The number of player of the match awards a player received is a good indication of a player's capability. Below is the list of top 20 player of the match award winners and how many times they have won the same.
+
+
+
+```{r}
+# top_20 players who got maximum player of the match award
+mat_ds %>%
+  group_by(pom) %>%
+  summarize(player_of_match= n()) %>%
+  arrange(desc(player_of_match)) %>%
+  head(n = 20)
+```
+
+It is also good to check how many matches were played by each team and by each player
+
+
+
+```{r, fig.width=10}
+# no.of matches played by each team
+played1 <- mat_ds %>%
+  group_by(team1) %>%
+  summarize(count1 = n()) %>%
+  arrange(team1) %>%
+  rename(team = team1)
+
+played2 <- mat_ds %>%
+  group_by(team2) %>%
+  summarize(count2 = n()) %>%
+  arrange(team2) %>%
+  rename(team = team2)
+
+matches_team <- played1 %>%
+  full_join(played2, by = "team") %>%
+  mutate(n_matches_played = count1 + count2) %>%
+  select(team, n_matches_played) %>% arrange(desc(n_matches_played))
+matches_team
+
+matches_team %>%
+  ggplot(aes(team, n_matches_played, fill = team)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  geom_text(aes(label = n_matches_played), hjust = -0.25)
+
+# no.of matches played by each player
+matches_players <- del_ds %>%
+  select(match_id, player) %>%
+  group_by(player, match_id) %>% 
+  slice(1) %>% 
+  ungroup() %>% 
+  count(player) %>%
+  rename(no_matches_played = n) %>%
+  arrange(desc(no_matches_played))
+matches_players %>% head(150)
+```
+
+All these players are top IPL players and having been playing in almost all seasons. Besides these players belong to the top teams (teams that played more matches), indicating they had chance to play more matches because of their team's higher success.
+
+As mentioned, in T20 matches batsman's ability to hit quick runs matters a lot. That means scoring maximum number of 6s and 4s is very important. Besides, big hitting in terms of maximum number of 6s and 4s is a major thriller for crowds and that is a major attraction in the game. The below table lists out the top 20 players who had hit maximum number of 6s and 4s in IPL.
+
+
+
+```{r}
+# Top_20 batsmen who hit maximum 6s and 4s
+del_ds %>%
+  filter(role == "batsman" & runs == 6 | runs == 4) %>%
+  group_by(player, runs) %>%
+  summarize(n = n()) %>%
+  spread(runs, n) %>%
+  rename(sixes = `6`,fours = `4`) %>%
+  select(sixes, fours) %>%
+  arrange(desc(sixes)) %>%
+  head(20)
+```
+
+All these are top batsmen in IPL in all seasons. Naturally they are big hitters and big time idols for fans.
+
+Next, we see the contribution of the top 20% (approx) of players (as both batsmen & bowlers) to the overall runs scored and dismissals in IPL in all seasons.
+
+
+
+```{r}
+# Overall runs scored in all IPL matches
+oa_IPL_runs <- del_ds %>%
+  filter(role == "batsman") %>%
+  summarize(overall_runs = sum(total_runs))
+oa_IPL_runs
+
+# Top_100 (~ 20%) batsmen with max runs
+t_bat_runs <- del_ds %>%
+  filter(role == "batsman") %>%
+  group_by(player) %>%
+  summarize(tot_runs = sum(runs))
+
+t100_bat_runs <- t_bat_runs%>%
+  arrange(desc(tot_runs)) %>%
+  head(n = 100)
+t100_bat_runs
+
+# Top_100 (~20%) batsmen contribution to overall runs scored in IPL 
+percent(sum(t100_bat_runs$tot_runs)/oa_IPL_runs$overall_runs)
+
+# Overall wicket dismissals in all IPL matches
+oa_IPL_wickets <- del_ds %>%
+  filter(role == "bowler" & dismissal_kind != "") %>%
+  summarize(overall_wickets = n())
+oa_IPL_wickets
+
+# Top_100 (~20%) bowlers with max wickets
+t_bowl_wickets <- del_ds %>%
+  filter(
+    role == "bowler" &
+      dismissal_kind != "obstructing the field" &
+      dismissal_kind != "" &
+      dismissal_kind != "retired hurt" & dismissal_kind != "run out"
+  ) %>%
+  group_by(player) %>%
+  summarize(tot_wickets = n()) 
+
+t100_bowl_wickets <- t_bowl_wickets %>%
+  arrange(desc(tot_wickets)) %>%
+  head(n = 100)
+t100_bowl_wickets
+
+# Top_100 (~20%) bowler contribution to overall wicket dismissals in IPL 
+percent(sum(t100_bowl_wickets$tot_wickets)/oa_IPL_wickets$overall_wickets)
+```
+
+As we can see the top 20% of players (batsmen) contributed to nearly 80% of runs scored in IPL. similarly the top 20% of players (bowlers) contributed to nearly 70% of all wickets dismissed in IPL. Here, we see Pareto's principal of 80:20 gaining ground.
+
+This is also true given that the top players also are the top players who have batted or bowled maximum balls as shown in the following tables. It is natural that the more balls a batsman faces, he scores more runs on an average, similarly the more a bowler bowls, the more wickets that he gets.  
+
+
+
+```{r}
+# Top_20 batsmen who faced maximum balls
+top_bat_max_balls <- del_ds %>%
+  filter(role == "batsman") %>%
+  group_by(player) %>%
+  summarize(tot_n_balls = n()) %>%
+  arrange(desc(tot_n_balls)) 
+
+top_bat_max_balls %>%
+  head(n = 20)
+
+# Top_20 bowlers who bowled maximum no. of balls
+top_bowl_max_balls <- del_ds %>%
+  filter(role == "bowler") %>%
+  group_by(player) %>%
+  summarize(tot_n_balls = n()) %>%
+  arrange(desc(tot_n_balls)) 
+
+top_bowl_max_balls %>%
+  head(n = 20)
+```
+
+Next, we will see who are the most expensive bowlers meaning who have conceded maximum runs. 
+
+
+
+
+```{r}
+# Top_20 bowlers who conceded maximum runs
+del_ds %>%
+  filter(role == "bowler") %>%
+  group_by(player) %>%
+  summarize(tot_runs = sum(runs), balls_bowled=n()) %>%
+  arrange(desc(tot_runs)) %>%
+  head(n = 20)
+```
+
+Though the above bowlers are generally well known and good bowlers, they have conceded many runs because of the fact that they have bowled too many balls over the seasons (note the number of balls they bowled). Naturally the more one bowls the more runs one gives away.
+
+So, in order to find out player value, we shall consider strike rate for batsman (average number of runs scored per ball; the more the better). And, for bowler, we shall consider economy rate (average number of runs given per ball ; the lesser the better).
+
+Here are tables with information on the top 20 batsmen in terms of strike rate, top 20 bowlers in terms of economy rate, top 20 bowlers in terms wicket strike rate (average number of balls bowled to take a wicket) and top 20 bowlers who conceded minimum runs.
+
+
+
+```{r}
+# Top_20 batsmen with max strike_rate
+del_ds %>%
+  filter(role == "batsman") %>%
+  group_by(player) %>%
+  summarize(runs_scored = sum(runs), balls_batted=n(), strike_rate = sum(runs) / n()) %>%
+  arrange(desc(strike_rate)) %>%
+  head(n = 20)
+
+# Top_20 bowlers with best economy rate
+del_ds %>%
+  filter(role == "bowler") %>%
+  group_by(player) %>%
+  summarize(runs_given = sum(runs), balls_bowled=n(), economy_rate = sum(runs) / n()) %>%
+  arrange(economy_rate) %>%
+  head(n = 20)
+
+# Top_20 bowlers with best wicket strike rates
+top_bowl_max_balls %>%
+  full_join(t_bowl_wickets, by = "player") %>%
+  mutate(strike_rate = tot_n_balls/ tot_wickets) %>%
+  arrange(strike_rate) %>%
+  head(20)
+
+# Top_20 bowlers who conceded minimum runs
+del_ds %>%
+  filter(role == "bowler") %>%
+  group_by(player) %>%
+  summarize(tot_runs = sum(runs),balls_bowled=n()) %>%
+  arrange(tot_runs) %>%
+  head(n = 20)
+```
+
+These are not well known players for their respective skills in batting or bowling. However, they figure in the top 20 just because they batted or bowled too few balls giving significant rates. The few runs scored/ conceded or the few wickets taken really will not matter given the very few balls. We will correct this a bit later using the well known regularizing technique. By the way, though interesting to note, we will not use wicket strike rates and minimum runs given by bowlers per se in our calculations.
+
+In order to start building our models, let us next see which are top scoring teams, winning teams and losing teams.
+
+
+
+```{r}
+# Total runs scored by each team
+deliveries %>%
+  select(batting_team, total_runs) %>%
+  group_by(team = batting_team) %>%
+  summarize(tot_runs = sum(total_runs)) %>%
+  arrange(desc(tot_runs))
+
+# Which team won how many matches
+winners <- mat_ds %>%
+  group_by(winner) %>%
+  filter(winner != "") %>%
+  summarize(count = n()) %>%
+  arrange(desc(count)) %>%
+  rename(team = winner, n_matches_won = count)
+winners
+
+# Which team lost how many matches
+lost1 <- mat_ds %>%
+  filter(winner != "") %>%
+  filter(as.character(winner) != as.character(team1)) %>%
+  group_by(team1) %>%
+  summarize(count1 = n()) %>%
+  arrange(team1) %>%
+  rename(team = team1)
+
+lost2 <- mat_ds %>%
+  filter(winner != "") %>%
+  filter(as.character(winner) != as.character(team2)) %>%
+  group_by(team2) %>%
+  summarize(count2 = n()) %>%
+  arrange(team2) %>%
+  rename(team = team2)
+
+losers <- lost1 %>%
+  full_join(lost2, by = "team") %>%
+  mutate(n_matches_lost = count1 + count2) %>%
+  select(-count1,-count2) %>%
+  arrange(desc(n_matches_lost))
+losers
+```
+
+Naturally, the top 3 teams among the winners, Mumbai Indians, Chennai Super Kings & Kolkata Knight Riders are the top 3 teams with maximum IPL championship wins, in that order.
+
+Similarly, Delhi Capitals, Kings XI Punjab & Royal Challengers Bangalore, the top 3 in losers group, are the top 3 unlucky teams, who haven't won the IPL championship even once. But being the next top teams, they have played more matches than other teams.
+
+Let us examine the wins and losses of teams by visualizing the data. First, we will check which teams won how many tosses. Then we will check if there is a relationship between number of matches played, number of tosses won and number of matches won.
+
+
+
+```{r, fig.height=5}
+# Won/ lost plots
+# Which team won how many tosses
+toss_winners <- mat_ds %>%
+  group_by(toss_winner) %>%
+  summarize(count = n()) %>%
+  arrange(desc(count)) %>%
+  rename(team = toss_winner, n_tosses_won = count)
+toss_winners
+
+teams <- matches_team %>%
+  right_join(winners, by = "team") %>%
+  right_join(losers, by = "team") %>%
+  right_join(toss_winners, by = "team")
+
+# correlation between match-wins and matches played
+teams %>%
+  ggplot(aes(n_matches_played, n_matches_won, fill = team)) +
+  geom_point(shape=21, size=3)
+
+cor(teams$n_matches_played, teams$n_matches_won)
+```
+
+It is natural that the more matches a team plays that much more chances it has, to win matches. We can see there are a few team which have played a few matches and won a very few. However, we can see a bunch of teams played similar number of matches (about 175 to 180), but the number of matches won by them varies significantly. This is because till knock out stage all team get to play equal number of matches; however, at knock out stage only 4 teams get to play more matches. The more a team wins, it gets more matches to play.
+
+Now, let us see if there is a correlation between match wins and toss wins and also between number of matches played and toss wins.
+
+```{r, fig.height=5}
+# correlation between matches played and toss-wins
+teams %>%
+  ggplot(aes(n_matches_played, n_tosses_won, fill = team)) +
+  geom_point(shape=25, size = 3)
+
+cor(teams$n_matches_played, teams$n_tosses_won)
+
+# correlation between match-wins and toss-wins
+teams %>%
+  ggplot(aes(n_tosses_won, n_matches_won, fill = team)) +
+  geom_point(shape=24, size = 3)
+
+cor(teams$n_matches_won, teams$n_tosses_won)
+```
+
+It is understandable that the more matches that a team plays, the more chances it has to win the toss, hence the high positive correlation. In the 1st plot, we can also see all the teams won the toss about 50% of time as toss is a pure chance event and is always 50%:50%.
+
+The 2nd plot, indicates an interesting fact. The team that had won more tosses also won more matches with a high positive correlation. There shall be an obvious reason which we will demonstrate a bit later. However, to reveal the reason, it is that teams which win toss, usually opt for fielding (batting 2nd) as that generally leads to the toss winning team winning the match.
+
+Now, let us check the win % of the teams.
+
+
+
+```{r, fig.height=5}
+# correlation between win% & matches played
+teams %>%
+  mutate(matches_won_percent = n_matches_won * 100 / n_matches_played) %>%
+  ggplot(aes(matches_won_percent, n_matches_played, fill =
+               team)) +
+  geom_point(shape=21, size = 3) +
+  xlab("% of matches won") +
+  coord_flip()
+
+cor(teams$n_matches_won * 100 / teams$n_matches_played,
+    teams$n_matches_played)
+```
+
+Playing more number of matches might give teams more wins compared to team that have played lesser number of matches. But the correlation indicates that win % eventually regresses towards 50% mark.  From the plot, we can make out that for established teams (which have played large number of matches), the win % varies between 40% and 60%.
+
+Now, getting back to the toss subject, team that wins the toss will select either to bat or to field first, the other team accordingly ends up taking the other role. The roles will be reversed after the first team finishes its batting innings. Let us see which team won how many tosses and how the decision of batting first or fielding first impacted wins.
+
+
+
+```{r, fig.height=5}
+# Toss wins by different teams
+toss_wins <- mat_ds %>%
+  filter(winner != "") %>%
+  group_by(toss_winner) %>%
+  summarize(t_wins = n())
+toss_wins
+
+# Toss wins Vs match wins or losses based on batted/ fielded first
+toss_wins_results <- mat_ds %>%
+  filter(winner != "") %>%
+  mutate(match_result = ifelse(toss_winner==winner, "win", "loss")) %>%
+  group_by(toss_winner, toss_dec, match_result) %>%
+  summarize(m_r_count = n()) 
+
+toss_wins_results_prcnts <- toss_wins_results %>% 
+  spread(match_result, m_r_count) %>%
+  full_join(toss_wins, by = "toss_winner") %>%
+  mutate(win_prcnt=win*100/(t_wins),
+         loss_prcnt= loss*100/(t_wins)) %>%
+  select(toss_winner, t_wins, toss_dec, win, win_prcnt, loss, loss_prcnt)
+  
+toss_wins_results_prcnts
+
+toss_wins_results %>% 
+  ggplot(aes(toss_winner, m_r_count, col = toss_dec, size = match_result)) +
+  geom_point()  +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    size = 6,
+    hjust = 1
+  ),
+  legend.position = "right") +
+  labs(subtitle="toss_dec is always by toss_winner")
+```
+
+From the above plot, we can observe the following.
+
+Looking at Blue dots, we can say that when teams after winning the toss, have selected to field first, most of the teams seem to have won (big dots) more matches.
+
+Similarly, looking at Red dots, we can say that when teams after winning the toss, have selected to bat first, most of the teams seem to have lost (small dots) more matches.
+
+Let us see what happened when teams have lost tosses.
+
+```{r, fig.height=5}
+# Toss losses by different teams
+toss_losses <- mat_ds %>%
+  filter(winner != "") %>%
+  mutate(toss_loser = ifelse(toss_winner == team1, team2, team1)) %>%
+  group_by(toss_loser) %>%
+  summarize(t_losses = n())
+toss_losses
+
+# Toss losses Vs match wins or losses based on batted/ fielded first
+toss_losses_results <- mat_ds %>%
+  filter(winner != "") %>% 
+  mutate(toss_loser = ifelse(toss_winner==team1, team2, team1)) %>%
+  mutate(match_result = ifelse(toss_loser==winner, "win", "loss")) %>%
+  group_by(toss_loser, toss_dec, match_result) %>%
+  summarize(m_r_count = n())
+
+toss_losses_results_prcnts <- toss_losses_results %>% 
+  spread (match_result, m_r_count) %>%
+  full_join(toss_losses, by = "toss_loser") %>%
+  mutate(win_prcnt=win*100/(t_losses),
+         loss_prcnt= loss*100/(t_losses))%>%
+  select(toss_loser, t_losses, toss_dec, win, win_prcnt, loss, loss_prcnt)
+
+toss_losses_results_prcnts
+
+toss_losses_results %>% 
+  ggplot(aes(toss_loser, m_r_count, col = toss_dec, size = match_result)) +
+  geom_point() +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    size = 6,
+    hjust = 1
+  ),
+  legend.position = "right") +
+  labs(subtitle="toss_dec is always by toss_winner")
+```
+
+As earlier, this time too, from the above plot, we can observe the following.
+
+First, we shall note:     
+Blue dots = toss_winner fielding first = toss_loser batting first and       
+Red dots = toss_winner batting first = toss_loser fielding first
+
+Looking at Blue dots, we can say that when teams after losing the toss, have been asked to bat first (Blue dot indicates toss winner to field first), most of the teams seem to have lost (big dots) more matches.
+
+Similarly, looking at Red dots, we can say that when teams after losing the toss, have been asked to field first (Red dot indicates toss winner to bat first), most of the teams seem to have won (small dots) more matches.
+
+From the above two plots, we can clearly conclude that when teams have batted second, most teams seems to have won more matches than lost. This fact influences teams to select fileding first after winning the toss. We can see the evidence for the same from the below tables.
+
+
+
+```{r}
+# No. of times teams selected to bat or field first after winning toss
+mat_ds %>%
+  group_by(toss_dec) %>%
+  summarize(count = n())
+
+# No. of times individual teams selected to bat or field first after winning toss
+mat_ds %>%
+  group_by(toss_winner, toss_dec) %>%
+  summarize(count = n()) %>%
+  spread(toss_dec, count) %>%
+  arrange(desc(field))
+```
+
+Next, let us see how many matches were played over the seasons. We will also see how many matches teams have won batting first and batting second.
+
+
+
+```{r}
+# Number of matches played over seasons
+matches %>%
+  group_by(season) %>%
+  summarize(matches_played=n()) %>%
+  ggplot(aes(season, matches_played)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(2007, 2019, by = 1))
+
+# How many matches teams won batting first and batting second
+# Total no. of matches won batting first across seasons
+mat_ds %>%
+  filter(team1==winner) %>%
+  summarize(count=n())
+
+# Total no. of matches won batting second across seasons
+mat_ds %>%
+  filter(team2==winner) %>%
+  summarize(count=n())
+
+# No. of matches won batting first season-wise
+wins_bat_1st <- mat_ds %>%
+  filter(team1==winner) %>%
+  group_by(season) %>%
+  summarize(wins_bat_1st=n())
+wins_bat_1st
+sum(wins_bat_1st$wins_bat_1st)
+
+# No. of matches won batting second  season-wise
+wins_bat_2nd <- mat_ds %>%
+  filter(team2==winner) %>%
+  group_by(season) %>%
+  summarize(wins_bat_2nd=n())
+wins_bat_2nd
+sum(wins_bat_2nd$wins_bat_2nd)
+
+wins_bat_1st %>%
+  inner_join(wins_bat_2nd, by="season") %>%
+  gather(batting_turn, wins, wins_bat_1st:wins_bat_2nd) %>%
+  ggplot(aes(season, wins, col=batting_turn)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(2007, 2019, by = 1))
+```
+
+The numbers and the 2nd plot clearly shows that teams batting 2nd have won more matches than teams that have batted first in all but two seasons.
+
+At this point, let us check how many runs were scored batting first and how many were scored batting second in totals and run type wise.
+
+
+
+```{r}
+# Winning margin
+del_ds %>%
+  filter(role=="batsman" & inning %in% 1:2) %>%
+  group_by(inning) %>%
+  summarize(total_runs_scored=sum(runs))
+
+del_ds %>%
+  group_by(match_id, inning) %>%
+  mutate(ball_no = 1:n()) %>% 
+  ungroup() %>%
+  filter(inning %in% 1:2 & runs %in% c(0,1,2,3,4,5,6,7) & ball_no %in% 1:120) %>%
+  group_by(inning, batsman_runs=factor(runs)) %>%
+  summarise(count=n()) %>%
+  spread(inning,count)
+```
+
+Here, we see an astonishing fact. Though, we have found out that teams batting 2nd have won more matches than teams batting 1st, the above figures show teams batting 1st have scored much more total runs than teams batting 2nd. In fact, all the totals for run types pretty much indicate teams batting 1st have scored more. These two facts are contrary to each other.
+
+However, a deeper thought gives away the reason. Teams batting 1st may win matches with huge margins if they get opponents out quickly, but teams batting 2nd always win with very thin margins, often just with a run, due to the fact that they need to just cross the target set by the 1st team.
+
+Let us check the number of matches played at each venue and how many matches were played at the top 10 venues.
+
+
+
+```{r, fig.width=12, fig.height=7}
+# no.of matches played at each venue
+matches_venue <- mat_ds %>%
+  group_by(venue) %>%
+  summarize(n_matches_played = n()) %>%
+  arrange(desc(n_matches_played))
+
+matches_venue %>%
+  ggplot(aes(venue, n_matches_played, fill = venue)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  geom_text(aes(label = n_matches_played), hjust = -1)
+
+# % of matches played at top_10 venues
+t10_n_matches_played <- matches_venue %>%
+  head(10)
+t10_n_matches_played
+
+percent(sum(t10_n_matches_played$n_matches_played)/total_played)
+```
+
+We can see that most of the matches were played at India's well known, big stadiums. In fact, the top 10 venues account for nearly 75% of the matches. All these top stadiums are home venues for respective teams naturally suggesting why more matches are played in them. The other reason is that as teams move into knockout stage, most of the matches are limited to these stadiums.
+
+Now, let us check if venue has any effect on team winning matches.
+
+
+
+```{r, fig.fullwidth=TRUE, fig.width=10, fig.height=6}
+# Venue effect on team wins
+mat_ds %>%
+  filter(winner != "") %>%
+  group_by(venue, winner) %>%
+  summarize(count = n()) %>%
+  ggplot(aes(venue, count, group = winner)) +
+  geom_point() +
+  geom_line(aes(col = winner), size = 1) +
+  scale_y_log10() +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    size = 6,
+    hjust = 1
+  ),
+  legend.position = "top", legend.title.align=0)
+```
+
+Though the plot lines at first don't show any significant relationship between match wins and venue, a closer look at the peaks for each line reveals an interesting fact. As a cricket fan I know that the highest of the peaks for each line are the home grounds for respective teams. This means teams win a lot more at home grounds than at other grounds clearly suggesting a strong relationship between home ground and match-wins for any team. The reasons are primarily teams get a lot more crowd support and also teams will be better accustomed to play at home venues.
+
+To confirm the effect of venue, let us also see if venue had played any role on teams scoring runs.
+
+```{r, fig.fullwidth=TRUE, fig.width=10, fig.height=6}
+# Venue effect on team runs
+del_ds %>%
+  full_join(mat_ds, by ="match_id") %>%
+  select(match_id, bat_team, role, total_runs, venue) %>%
+  filter(role == "batsman") %>%
+  group_by(venue, bat_team) %>%
+  summarize(runs_scored = sum(total_runs)) %>%
+  ggplot(aes(venue, runs_scored, group = bat_team)) +
+  geom_line(aes(col = bat_team), size = 1) +
+  scale_y_log10() +
+  theme(axis.text.x = element_text(
+    angle = 90,
+    size = 6,
+    hjust = 1
+  ),
+  legend.position = "top", legend.title.align=0)
+```
+  
+The peaks for each line again represent home grounds for respective teams. In effect, we can say that teams playing at home not only won more matches but also scored more runs. 
+
+Now that we have done enough data exploration, let us get into the task of building our model to determine player values.
+
+\newpage
+# Methods & Analysis - Model Building & Results:          
+\vspace{6pt}
+## 1st Objective - Building a model to rank players by their playing calibre:
+\vspace{12pt}
+
+A player value depends upon   
+
+  - his ability to score quick runs (highest strike rates) and bowl economically (lowest economy rates) 
+  
+  - his contribution made to the runs scored by the team and the wickets dismissed by the team in matches that have been both won and lost by his team
+  
+  - his ability to score quick runs against top bowlers (we will consider top 20 bowlers by their economy rate) and to bowl economically against top batsmen (we will consider top 20 batsmen by their strike rates).
+  
+  - all players are rated as a btasman and as a bowler irrespective of their actual or primary domain. Hence, the nomenclature, "batsman" or "bowler" in the model building refers to all players.
+
+\newpage
+### TOP_RATE_PLAYERS: 
+#### Order of players with best batting striking rates & bowling economy rates    
+
+\vspace{12pt}
+
+The first step in our model building to develop players values is to determine each player's batting strike rate and bowling economy rate.
+
+Before going ahead, let us take  a look at the distribution of runs scored by batsmen (determines strike rate) and runs given away by bowlers (determines economy rate) for normality.
+
+
+
+```{r}
+# Distribution of runs scored by batsmen
+del_ds %>%
+  filter(role == "batsman") %>%
+  group_by(player) %>%
+  summarize(runs_scored = sum(runs)) %>%
+  mutate(runs_scored = runs_scored + 1) %>%
+  ggplot(aes(runs_scored)) +
+  geom_histogram(aes(), bins=30, colour="black") +
+  scale_x_log10() 
+
+# Distribution of runs given by bowlers
+del_ds %>%
+  filter(role == "bowler") %>%
+  group_by(player) %>%
+  summarize(runs_given = sum(runs)) %>%
+  mutate(runs_given = runs_given + 1) %>%
+  ggplot(aes(runs_given)) +
+  geom_histogram(aes(), bins=30, colour="black") +
+  scale_x_log10()
+```
+
+The histogram distribution follows normal curve shape, hence we can assume the runs data distribution is normal.
+
+Next, we calculate some basic statistics on balls faced and runs scored by batsmen and balls bowled and runs given by bowlers.
+
+
+
+```{r}
+# batsmen average & median number of balls and runs
+batsmen_avgs <- del_ds %>%
+  filter(role == "batsman") %>%
+  group_by(player) %>%
+  summarize(tot_balls = n(), tot_runs = sum(runs)) %>%
+  summarize (
+    avg_balls = mean(tot_balls),
+    median_balls = median(tot_balls),
+    avg_runs = mean(tot_runs),
+    median_runs = median(tot_runs),
+    max(tot_runs),
+    min(tot_runs),
+    max(tot_balls),
+    min(tot_balls)
+  )
+
+t(as.matrix(batsmen_avgs))
+
+# bowler average & median number of balls and runs
+bowler_avgs <- del_ds %>%
+  filter(role == "bowler") %>%
+  group_by(player) %>%
+  summarize(tot_balls = n(), tot_runs = sum(runs)) %>%
+  summarize (
+    avg_balls = mean(tot_balls),
+    median_balls = median(tot_balls),
+    avg_runs = mean(tot_runs),
+    median_runs = median(tot_runs),
+    max(tot_runs),
+    min(tot_runs),
+    max(tot_balls),
+    min(tot_balls)
+  )
+
+t(as.matrix(bowler_avgs))
+```
+
+Now, we will calculate the strike rates for batsmen and economy rates for bowlers using regularization technique. We have earlier seen that the players with highest batting strike rates and best economy rates are not well known for their skills in respective domains (batting or bowling). However, they ended best because of the fact that they played very few balls, resulting in best rates. In order to neutralize this effect, we use penalties to calculate revised batting strike rates or bowling economy rates. 
+
+From the batsmen and bowler statistics generated above we see the median values are much smaller than the average values. Hence, we use median values as the penalty terms to regularize as this will not effect much the rates of regular, known players in respective domains but will reduce the effects for the players who had batted/ bowled a very few balls.  
+
+Then we take a look again at the players with highest batting strike rates and lowest economy rates.
+
+
+
+```{r}
+# Top players with strike rates & economy rates after regularisation using median runs 
+# and median balls
+str_rates <- del_ds %>%
+  filter(role == "batsman") %>%
+  group_by(player) %>%
+  summarize(reg_str_rate = (sum(runs) + batsmen_avgs$median_runs) / (n() +
+      batsmen_avgs$median_balls)) %>%
+  arrange(desc(reg_str_rate))
+
+str_rates %>%
+  head(20)
+
+eco_rates <- del_ds %>%
+  filter(role == "bowler") %>%
+  group_by(player) %>%
+  summarize(reg_eco_rate = (sum(runs) + bowler_avgs$median_runs) / 
+(n() + bowler_avgs$median_balls)) %>%
+  arrange(reg_eco_rate)
+
+eco_rates %>%
+  head(20)
+```
+
+Now as expected we can see that the top players for batting strike rates and bowling economy rates are all top, regular players in the respective domains of batting and bowling.
+
+Next, using the regularized strike rates and economy rates, we construct top rated players, Naturally, we can expect all players who are in batsmen list may not figure in bowler list, and vice versa. This will reintroduce NAs when we try to combine strike rates and economy rates to arrive at player values. We use a similar technique as regularization to replace these NAs. For those players who have never batted, we will assume them  to score minimum runs in maximum balls. Hence, we will use median runs and average balls for replacing NAs. Similarly, for players who have never bowled, we will assume them to give away more runs in less balls. Hence, we will use average runs and median balls for replacing NAs.
+
+With the above approach, let us see who are our top rated players.
+
+
+
+```{r}
+# Top rate players based on strike rates & economy rates
+top_rate_players <- str_rates %>%
+  full_join(eco_rates, by = "player") %>%
+  mutate(reg_str_rate = replace_na(
+    reg_str_rate,
+    batsmen_avgs$median_runs / batsmen_avgs$avg_balls
+  )) %>%
+  mutate(reg_eco_rate = replace_na(reg_eco_rate, bowler_avgs$avg_runs /
+                                     bowler_avgs$median_balls)) %>%
+  mutate(player_value = 100 * (reg_str_rate + 1 / reg_eco_rate)) 
+
+top_rate_players %>%
+  arrange(desc(player_value)) %>%
+  select(player, player_value) %>%
+  mutate(rank = row_number()) %>%
+  head(50) %>% 
+  knitr::kable()
+```
+
+As we could see the list includes some match winning top all round players who are big hitters with high strike rates and bowl tight overs.
+
+\newpage
+### TOP_CONTRI_PLAYERS: 
+#### Order of players with best number of highest contributions in won & lost matches    
+\vspace{12pt}
+
+Having rated players by their striking and economy rates, the next step is to determine the contribution of each player as a batsman and as a bowler for his team in terms of runs scored and wickets taken in both matches that the team had won and lost.
+
+For that, let us find out which team had won and which team had lost which of the 752 matches.
+
+```{r}
+# Which teams have won which matches and lost which matches
+# Which matches which teams have won
+won_t1 <- mat_ds %>%
+  filter(winner != "") %>%
+  filter(as.character(winner) == as.character(team1)) %>%
+  select(match_id, team = team1)
+
+won_t2 <- mat_ds %>%
+  filter(winner != "") %>%
+  filter(as.character(winner) == as.character(team2)) %>%
+  select(match_id, team = team2)
+
+won_matches <- won_t1 %>%
+  bind_rows(won_t2)
+
+# Which matches which teams have lost
+lost_t1 <- mat_ds %>%
+  filter(winner != "") %>%
+  filter(as.character(winner) != as.character(team1)) %>%
+  select(match_id, team = team1, winner)
+
+lost_t2 <- mat_ds %>%
+  filter(winner != "") %>%
+  filter(as.character(winner) != as.character(team2)) %>%
+  select(match_id, team = team2, winner)
+
+lost_matches <- lost_t1 %>%
+  bind_rows(lost_t2)
+```
+
+Then we find out who are the batsmen who have scored maximum runs in the matches that their teams have won and similarly the bowlers who have dismissed maximum of opponent's wickets in the matches that their teams have won.
+
+
+
+```{r}
+# Batsmen score contribution in won matches
+# Top scorer for winning sides
+batsman_contr_w <- del_ds %>%
+  full_join(won_matches, by = "match_id") %>%
+  filter(role == "batsman" & bat_team == team) %>%
+  group_by(match_id, player) %>%
+  summarize(batsman_score = sum(runs)) %>%
+  top_n(1, batsman_score) %>%
+  full_join(won_matches, by = "match_id")
+batsman_contr_w
+
+# Bowler wicket taking contribution in won matches
+# Top wicket taker for winning sides
+bowler_contr_w <- del_ds %>%
+  full_join(won_matches, by = "match_id") %>%
+  filter(role=="bowler" & bowl_team == team) %>%
+  filter (dismissal_kind %in% c("bowled", "caught", "caught and bowled", "hit wicket",     
+"lbw", "stumped")) %>%
+  select(match_id, team, bowl_team, player, dismissal_kind) %>%
+  group_by(match_id, player) %>% 
+  summarize(bowler_wckts = n()) %>%
+  top_n(1, bowler_wckts) %>%
+  full_join(won_matches, by = "match_id")
+bowler_contr_w
+```
+
+Note that it is common for more than one bowler to dismiss the same number of opponent batsmen in the same match, while two batsmen scoring the same top score for their teams in the same match is rare.
+
+Let us reorder our above table for batsmen contribution in terms highest individual contributions and also count the number of times a batsman had made highest contribution to his team.
+
+
+
+```{r}
+# Top_batsmen on winning sides in the order of highest individual scores
+winning_t_scores <- del_ds %>%
+  full_join(won_matches, by = "match_id") %>%
+  filter(role == "batsman" & bat_team == team) %>%
+  group_by(match_id) %>%
+  summarize(team_score = sum(total_runs)) %>%
+  full_join(batsman_contr_w, by = "match_id") %>%
+  arrange(desc(batsman_score))
+winning_t_scores
+
+# Top_batsmen on winning sides in terms no.of top_scores 
+win_scores <- winning_t_scores %>%
+  group_by(player) %>%
+  summarize(batsman_count = n()) %>%
+  arrange(desc(batsman_count))
+win_scores
+```
+
+The players appear at the top of the list seem to be consistent with their reputation.
+
+We will also check bowlers' contribution too in terms of maximum wicket taking contribution in the matches that their teams have won.
+
+
+
+```{r}
+# Top_bowlers on winning sides in terms no.of maximum wickets 
+win_wickets <- bowler_contr_w %>%
+  group_by(player) %>%
+  summarize(bowler_count = n()) %>%
+  arrange(desc(bowler_count))
+win_wickets
+```
+
+Now, we will do the whole exercise of finding batsmen's contribution and bowlers' contribution to their teams in the matches that the teams have lost.
+
+
+
+```{r}
+# Batsmen score contribution in lost matches
+# Top scorer for losing sides
+batsman_contr_l <- del_ds %>%
+  full_join(lost_matches, by = "match_id") %>%
+  filter(role == "batsman" & bat_team == team) %>%
+  group_by(match_id, player) %>%
+  summarize(batsman_score = sum(runs)) %>%
+  top_n(1, batsman_score) %>%
+  full_join(lost_matches, by = "match_id") %>%
+  rename(losing_team=team) 
+batsman_contr_l
+
+# Bowler wicket taking contribution in lost matches
+# Top wicket taker for losing sides
+bowler_contr_l <- del_ds %>%
+  full_join(lost_matches, by = "match_id") %>%
+  filter(role=="bowler" & bowl_team == team) %>%
+  filter(dismissal_kind %in% c("bowled", "caught", "caught and bowled", "hit wicket",
+                              "lbw", "stumped")) %>%
+  select(match_id, team, bowl_team, player) %>%
+  group_by(match_id, player) %>% 
+  summarize(bowler_wckts = n()) %>%
+  top_n(1, bowler_wckts) %>%
+  full_join(lost_matches, by = "match_id") %>%
+  rename(losing_team=team) 
+bowler_contr_l
+
+# Top_batsmen on losing sides in the order of highest individual scores
+losing_t_scores <- del_ds %>%
+  full_join(lost_matches, by = "match_id") %>%
+  filter(role == "batsman" & bat_team == team) %>%
+  group_by(match_id) %>%
+  summarize(team_score = sum(total_runs)) %>%
+  full_join(batsman_contr_l, by = "match_id") %>%
+  arrange(desc(batsman_score))
+losing_t_scores
+
+# Top_batsmen on losing sides in terms no.of top_scores 
+loss_scores <- losing_t_scores %>%
+  group_by(player) %>%
+  summarize(batsman_count = n()) %>%
+  arrange(desc(batsman_count))
+loss_scores
+
+# Top_bowlers on losing sides in terms no.of maximum wickets 
+loss_wickets <- bowler_contr_l %>%
+  group_by(player) %>%
+  summarize(bowler_count = n()) %>%
+  arrange(desc(bowler_count))
+loss_wickets
+```
+
+Next, we summarize the batsmen's contribution in won and lost matches to arrive at his contribution for their teams in won and lost matches.
+
+
+
+```{r}
+# Top batsmen contribution in won matches & lost matches - arranged by contribution in WON matches
+top_contri_batsmen <- win_scores %>%
+  rename(contribution_in_WON_matches = batsman_count) %>%
+  full_join(loss_scores, by = "player") %>%
+  rename(contribution_in_LOST_matches = batsman_count) %>%
+  arrange(desc(contribution_in_WON_matches))
+top_contri_batsmen
+
+# Top batsmen contribution in won matches & lost matches - arranged by contribution in LOST matches
+top_contri_batsmen <- win_scores %>%
+  rename(contribution_in_WON_matches = batsman_count) %>%
+  full_join(loss_scores, by = "player") %>%
+  rename(contribution_in_LOST_matches = batsman_count) %>%
+  arrange(desc(contribution_in_LOST_matches))
+top_contri_batsmen
+
+# Top batsmen overall contribution in won matches & lost matches
+top_contri_batsmen <- top_contri_batsmen %>%
+  mutate(batsman_contribution = contribution_in_LOST_matches +
+           contribution_in_WON_matches) %>%
+  select(
+    player,
+    batsman_contribution,
+    contribution_in_LOST_matches,
+    contribution_in_WON_matches
+  ) %>%
+  arrange(desc(batsman_contribution))
+top_contri_batsmen
+```
+
+Note that we have arranged the batsmen's contribution in the order of won matches and also lost matches.
+
+Similarly, we summarize the bowlers' contribution in won and lost matches to arrive at his contribution for their teams in won and lost matches.
+
+
+
+```{r}
+# Top bowlers contribution in won matches and lost matches - arranged by contribution in WON matches
+top_contri_bowlers <- win_wickets %>%
+  rename(contribution_in_WON_matches = bowler_count) %>%
+  full_join(loss_wickets, by = "player") %>%
+  rename(contribution_in_LOST_matches = bowler_count) %>%
+  arrange(desc(contribution_in_WON_matches))
+top_contri_bowlers
+
+# Top bowlers contribution in won matches and lost matches - arranged by contribution in LOST matches
+top_contri_bowlers <- win_wickets %>%
+  rename(contribution_in_WON_matches = bowler_count) %>%
+  full_join(loss_wickets, by = "player") %>%
+  rename(contribution_in_LOST_matches = bowler_count) %>%
+  arrange(desc(contribution_in_LOST_matches))
+top_contri_bowlers
+
+# Top bowlers overall contribution in won matches and lost matches
+top_contri_bowlers <- top_contri_bowlers %>%
+  mutate(bowler_contribution = contribution_in_LOST_matches +
+           contribution_in_WON_matches) %>%
+  select(
+    player,
+    bowler_contribution,
+    contribution_in_LOST_matches,
+    contribution_in_WON_matches
+  ) %>%
+  arrange(desc(bowler_contribution))
+top_contri_bowlers
+```
+
+For bowlers also, we have arranged the contribution in the order of won matches and also lost matches.
+
+Now that we know top contribution batsmen and bowlers, let us summarize the information into top contribution players. 
+
+Here, first, we replace NAs with 0s as NAs are introduced for players who did not contribute. 
+
+The more number of matches a player plays, that many more chances he has to make highest contributions for his team. To regularize the contribution effect of players who played more matches than others, we assume they would have made median contribution after playing average number of matches, and this is true for all players. Hence, we use median contribution and average matches in arriving at player contributions. We have earlier explained how regularization works as a penalty term.
+
+
+
+```{r}
+# Top_contribution players in won/ lost matches
+top_contri_players <- top_contri_batsmen %>%
+  full_join(top_contri_bowlers, by="player") 
+
+top_contri_players[is.na(top_contri_players)] <- 0
+
+top_contri_players <- top_contri_players %>%
+  mutate(player_contribution = batsman_contribution + bowler_contribution) %>%
+  select(player,player_contribution, batsman_contribution, bowler_contribution)
+top_contri_players %>% 
+  arrange(desc(player_contribution))
+
+# Average and median of top contribution by players
+stats_contri <- top_contri_players %>%
+  summarize(avg_contri_pp = mean(player_contribution), 
+            med_contri_pp = median(player_contribution))
+
+# Average and median of matches played by players
+stats_matches <- matches_players %>%
+  summarize(avg_mat_played = mean(no_matches_played), 
+            med_mat_played = median(no_matches_played))
+
+top_contri_players <- top_contri_players %>%
+  full_join(matches_players, by ="player") %>%
+  mutate(player_contri_rate=(player_contribution+stats_contri$med_contri_pp)/
+           (no_matches_played+stats_matches$avg_mat_played))
+
+top_contri_players %>%
+  select(player, player_contribution, player_contri_rate) %>%
+  arrange(desc(player_contri_rate)) %>%
+  head(50) %>%
+  knitr::kable()
+```
+
+As we can see, the contribution rates have essentially regulirised the effect by reducing the contribution levels of the players who have played more matches.
+
+Now that we have identified top-rate-players (players with best batting strike rates and bowling economy rates) and top-contributing-players (players who have contributed maximum number of times both when their teams have won or lost in terms of scoring runs and taking wickets), let us address one more performance area that will be used to calculate final player values.
+
+We call this player-excellence-rate factor which primarily measures batsmen strike rate against top 20 economy bowlers and also bowlers economy rate against top 20 strike batsmen. Thus we ensure that our list provides player rates based on their performance against the best in business.
+
+\newpage
+### TOP_EXCEL_PLAYERS: 
+#### Order of players with best performance against best bowlers and best batsmen    
+\vspace{12pt}
+
+
+We start with listing out top 20 batsmen in terms of their strike rate and top 20 bowlers in terms of their economy rate.
+
+We have earlier rated players by their batting strike rates and bowling economy rates after regularisation and called these lists "str_rates" and "eco_rates" respectively. Let us use these lists to generate the top 20 strike batsmen and top 20 economy bolwers in order to calculate excel_rates for all players. 
+
+
+
+```{r}
+# Top 20 strike batsmen and top 20 economy bowlers
+top_20_batsmen <- str_rates %>%
+  head(20)
+top_20_batsmen
+
+top_20_bowlers <- eco_rates %>%
+  head(20)
+top_20_bowlers
+```
+
+Then we calculate the strike rates of all batsmen against the best 20 bowlers and economy rates of all bowlers against the best 20 batsmen.
+
+All batsmen might have not played against top 20 bowlers and all bowlers might have not played against top 20 batsmen. Hence, to normalize batting strike rates and bowling strike rates for all batsmen, we assume they would have scored less runs in average number of balls. Similarly, we can assume all bowlers would have given away more runs in less number of balls.
+
+
+
+```{r}
+# batsmen strike rate against top_20 bowlers
+sr_vs_t20_bowlers <- deliveries %>%
+  filter(bowler %in% top_20_bowlers$player) %>%
+  group_by(player = batsman) %>%
+  summarize(sr_t20 = (sum(batsman_runs) + batsmen_avgs$median_runs) / (n() +          
+         batsmen_avgs$avg_balls)) %>%
+  arrange(desc(sr_t20))
+sr_vs_t20_bowlers %>%
+  head(20) %>%
+  mutate(rank = row_number())
+
+# bowlers economy rate against top_20 batsmen
+er_vs_t20_batsmen <- deliveries %>%
+  filter(batsman %in% top_20_batsmen$player) %>%
+  group_by(player = bowler) %>%
+  summarize(er_t20 = (sum(batsman_runs) + bowler_avgs$avg_runs) / (n() +         
+        bowler_avgs$median_balls)) %>%
+  arrange(er_t20)
+er_vs_t20_batsmen %>%
+  head(20) %>%
+  mutate(rank = row_number())
+```
+
+Now we generate the table for excellence players by joining the above two lists, replacing the NAs as earlier without affecting others and arranging them by the strike rate in descending order.
+
+
+
+```{r}
+# Top excellence players
+top_excel_players <- er_vs_t20_batsmen %>%
+  full_join(sr_vs_t20_bowlers, by = "player") %>%
+  mutate(sr_t20 = replace_na(sr_t20, batsmen_avgs$median_runs / batsmen_avgs$avg_balls)) %>%
+  mutate(er_t20 = replace_na(er_t20, bowler_avgs$avg_runs / bowler_avgs$median_balls))
+```
+
+
+
+```{r}
+# Top 50 Excellence Players
+top_excel_players %>%
+  select(player, sr_t20, er_t20) %>%
+  arrange(desc(sr_t20)) %>%
+  head(50) %>% 
+  knitr::kable()
+```
+
+\newpage
+### TOP_CALIBER_PLAYERS: 
+#### Order of players based on their summarized player values    
+\vspace{12pt}
+
+
+Now, we have done all the ground work, it is time to rank players by their caliber. For this we calculate the final player values using the already calculated values for top-rated-players, player-contribution-rate and player-excellence-rates. Here, once again, we replace the NAs in batsmen strike rates using median runs in average balls and economy rates using average runs in median balls. 
+
+```{r}
+# Players by their calibre - strike rate + economy rate, 
+# contribution in win/ loss situation and 
+# player's excellence against the best in business
+
+top_calibre_players <- top_rate_players %>%
+  select(-player_value) %>%
+  full_join(top_excel_players, by = "player") %>%
+  mutate(sr_t20 = replace_na(sr_t20, batsmen_avgs$median_runs / batsmen_avgs$avg_balls)) %>%
+  mutate(er_t20 = replace_na(er_t20, bowler_avgs$avg_runs / bowler_avgs$median_balls)) %>%
+  full_join(top_contri_players, by="player") %>% 
+  
+  mutate(player_value = 100 * ((reg_str_rate + sr_t20) + 1 /
+                                 (reg_eco_rate + er_t20) + 
+                                 player_contri_rate)) %>%
+  select(player, player_value) %>%
+  arrange(desc(player_value)) %>%
+  mutate(rank = row_number())
+
+top_calibre_players %>%
+  head(20)
+```
+
+\newpage
+### TOP_150_CALIBRE_PLAYERS: 
+#### Top 150 players in terms of player value   
+\vspace{12pt}
+
+Finally, since there are 8 teams in IPL and if we assume 18 players per team including extra players, we can have about 150 players in our list. Below is the list of top 150 players by their player value.
+
+
+
+```{r}
+# Top 150 calibre players by player value
+top_150_calibre_players <- top_calibre_players %>%
+  head(150) 
+
+top_150_calibre_players%>% 
+  knitr::kable()
+```
+
+\newpage
+\vspace{6pt}
+## 2nd Objective - Building a model with maximum F1 Score to predict the winner of a match:
+\vspace{12pt}
+
+
+Now, let us start addressing our second objective of predicting which team wins a particular match given a specific set of predictor variables. For this purpose, we use our matches dataset. 
+
+Given the nature of our dataset, which is small and extremely categorical, in fact all variables are factors, we can expect the prediction metrics to be not very high. This is also due to the fact that we have many classifiers.
+
+In order to set about to achieve our objective, we will adopt the below explained conditions.
+
+  1. Since we have seen venue, batting_turn, toss wins have significant effect on the runs scored and matches won by teams, we will consider "venue", "toss_winner" & "toss_decision" variables along with "team1 (first team to bat)" & "team2 (second team to bat)" as predictor variables to predict the "winner (response variable)" of the match.
+  
+  2. We will only consider the top 8 teams, which have played the most matches and also the current teams for our model building and predictions.
+  
+  3. We have 8 different classifiers; 8 different teams that can win matches. Since this is a classification problem and our data is all factors, we use a few machine learning methods ("Naive Bayes",  "Regression Tree", "Random Forest", "Multinomial Regression", "Linear Discriminant Analysis" and "K Nearest Neighbours") to train models and predict results. 
+  4. Accuracy will not be the measure of our model prediction strength. This is because, we are not really interested in predicting negatives; rather we are more interested in positive predictions. Besides we have all factor data and many classifiers. Thus our metric of model evaluation will be "F1 Score", which is based on "recall" and "precision".
+  
+  7. What the models do is to predict the winner of a match given the opponent, venue, toss winner and toss decision.
+  
+  8. We will create two data sets, "train_set" and "test_set" for training and testing our models.
+
+Let us start with some wrangling of our "matches" dataset to create the data sets for training and testing of models.
+
+First, let us pick our top 8 teams from  "matches_team" object that we have created earlier, which lists out teams by the number of matches played. We call this new list of 8 teams as "teams".
+
+
+
+```{r}
+# Create the list of top 8 teams from matches_team (teams Vs matches played)
+teams <- matches_team %>%
+  top_n(8) %>% 
+  select (team)
+
+teams
+```
+
+Now, let us get into creating our master dataset, training and test datasets, check their dimensions and names, and train and test a few models. This involves some amount of data wrangling and pre-processing.
+
+
+
+```{r, warning=FALSE, message=FALSE}
+# Do required pre-processing and data wrangling
+dat_set <- matches %>%
+  select(first_bat_team = team1,
+         second_bat_team = team2, winner, venue, toss_winner, toss_decision) %>%
+  filter(winner != "" & first_bat_team %in% teams$team & second_bat_team %in% teams$team) %>%
+  mutate_all(funs(str_replace_all(., "Chennai Super Kings", "CSK"))) %>% 
+  mutate_all(funs(str_replace_all(., "Delhi Capitals", "DC"))) %>%
+  mutate_all(funs(str_replace_all(., "Kings XI Punjab", "KP"))) %>% 
+  mutate_all(funs(str_replace_all(., "Kolkata Knight Riders", "KKR"))) %>% 
+  mutate_all(funs(str_replace_all(., "Mumbai Indians", "MI"))) %>% 
+  mutate_all(funs(str_replace_all(., "Rajasthan Royals", "RR"))) %>% 
+  mutate_all(funs(str_replace_all(., "Royal Challengers Bangalore", "RCB"))) %>% 
+  mutate_all(funs(str_replace_all(., "Sunrisers Hyderabad", "SRH"))) %>%
+  mutate(first_bat_team = as.factor(first_bat_team), second_bat_team = as.factor(second_bat_team), 
+         winner = as.factor(winner), venue = as.factor(venue), toss_decision = as.factor(toss_decision),
+         toss_winner = as.factor(toss_winner)) 
+
+any(is.na(dat_set))
+summary(dat_set)
+dim(dat_set)
+```
+
+Note that we have renamed "team1" and "team2" variables as "first_bat_team" and "second_bat_team", replaced the names of teams by abbreviations and coerced all variables into factors. We do not have any NAs in our master dataset created and have 568 observations corresponding to different matches played between teams.
+
+Now, let us create our train and test datasets and ensure all variable value labels in test dataset also exist in train dataset. We will also check the dimensions and ensure we have same variables in both train and test datasets.
+ 
+
+
+```{r,}
+# Limit the number of deciamal places to 4 
+options(digits=4)
+# if using R 3.5 or earlier, use `set.seed(1)` instead - to get same results every time
+set.seed(1, sample.kind="Rounding")
+
+# test set will be approx 10% of our dat set
+test_index <- createDataPartition(dat_set$winner, times = 1, p = 0.1, list = FALSE)
+
+train_set <- dat_set[-test_index,]
+temp_set <- dat_set[test_index,]
+
+# Make sure all variable values in test set are also in train set
+test_set <- temp_set %>%
+  semi_join(train_set, by = "first_bat_team") %>%
+  semi_join(train_set, by = "second_bat_team") %>%
+  semi_join(train_set, by = "venue") %>%
+  semi_join(train_set, by = "toss_decision") %>%
+  semi_join(train_set, by = "toss_winner") 
+
+# Add rows removed from temp set back into train set
+removed <- anti_join(temp_set, test_set)
+train_set <- rbind(train_set, removed) 
+
+# Check dimensions & variable names of train_set and test_set
+dim(train_set)
+dim(test_set)
+names(train_set)
+names(test_set)
+```
+
+Let us start our model building to predict winner of matches subject to previously explained variables.
+
+Since our data is non-numeric, particularly the response variable, linear regression will not work. Hence, let us try  to build our models based on "Naive Bayes",  "Regression Tree", "Random Forest", "Multinomial Regression", "Linear Discriminant Analysis" and "K Nearest Neighbours" methods, one after the other.
+
+Let us start first with "Naive Bayes" method.
+
+
+\newpage
+### Model based on "Naive Bayes" method:
+\vspace{12pt}
+
+"Naive Bayes" model is expected to converge fast and is a good training method for a few yet independent predictor variables.
+
+
+
+```{r}
+# Fit the Model based on "Naive Bayes" method, predict, test, calculate F1 score for all classes
+fit_nb <- train(winner ~ ., method = "naive_bayes", data = train_set)
+pre_nb <- predict(fit_nb, test_set)
+F1_nb <- confusionMatrix(pre_nb, test_set$winner)$byClass[,"F1"]
+F1_nb <- as.data.frame(t(F1_nb)) %>% mutate(avg_F1_score = rowMeans(.))
+F1_nb
+```
+
+As we can see, though Naive Bayes quickly converged in training the model, it did not predict for certain classes, thereby did not produce F1 scores for those classes.
+
+Please note that we are also calculating average F1 score, "avg_F1_score", for all the classes, to compare different models for the prediction strength. In this case, it did not produce an average score (resulted in NA). 
+
+At this point, let us also build a table to keep a note of all our results for different models as we go on improving and create our final model. For better readability sake, we will also replace the column names by getting rid of "Class: " portion from all columns (classes). 
+
+
+
+```{r,}
+# Make column names more readable
+colnames(F1_nb) = gsub("Class: ", "", colnames(F1_nb))
+# F1 table for different models
+F1_table <- data.frame(Model = "Naive Bayes") %>% bind_cols(F1_nb)
+
+F1_table %>% knitr::kable()
+```
+
+\newpage
+### Model based on "rpart" method:
+\vspace{12pt}
+
+Next, we try "rpart", a classification and regression tree algorithm, which will build a single tree to construct our model.
+
+
+
+```{r, warning=FALSE}
+# Fit the Model based on "rpart (CART)" method, predict, test, calculate F1 score for all classes
+fit_rp <- train(winner ~ ., method = "rpart", data = train_set)
+pre_rp <- predict(fit_rp, test_set)
+F1_rp <- confusionMatrix(pre_rp, test_set$winner)$byClass[,"F1"]
+F1_rp <- as.data.frame(t(F1_rp)) %>% mutate(avg_F1_score = rowMeans(.))
+F1_rp
+```
+
+
+
+Though "rpart" did a better job predicting different classes, it too has produced NAs for a few classes. It too has the same deficiencies of our previous model in terms of not predicting certain classes.
+
+Let us update our F1 table.
+
+
+
+```{r, warning=FALSE}
+# Make column names more readable
+colnames(F1_rp) = gsub("Class: ", "", colnames(F1_rp))
+# Update F1 table - continued.2
+F1_table <- bind_rows(F1_table,
+                        data.frame(Model = "CART (rpart)") %>% bind_cols(F1_rp))
+
+F1_table %>% knitr::kable()
+```
+
+
+\newpage
+### Model based on "Multinom" method:
+\vspace{12pt}
+
+Next, we will try multinomial logistic regression to train our model using "multinom" function. Since our response variable includes 8 classes, this model might provide better results predicting all classes.
+
+
+
+```{r}
+# Fit the Model based on "multinom" method, predict, test, calculate F1 score for all classes
+fit_mn <- train(winner ~ ., method = "multinom", data = train_set, trace = FALSE)
+pre_mn <- predict(fit_mn, test_set)
+F1_mn <- confusionMatrix(pre_mn, test_set$winner)$byClass[,"F1"]
+F1_mn <- as.data.frame(t(F1_mn)) %>% mutate(avg_F1_score = rowMeans(.))
+F1_mn
+```
+
+As expected, this model predicted for all classes and for the first time, we have the average F1 score. We can see using this model, our predictions will be the best for "Mumbai Indians" (MI) to be the winner with 0.72 F1 score. Not bad.
+
+So, let us update our F1 table and move forward building our next model using Linear Discriminant Analysis (LDA) which works based on dimension reduction. Let us recall that toss winner and toss decision are highly correlated, hence, LDA might very well be able reduce the predictor dimensions.
+
+
+
+```{r, warning=FALSE}
+# Make column names more readable
+colnames(F1_mn) = gsub("Class: ", "", colnames(F1_mn))
+# Update F1 table - continued.4
+F1_table <- bind_rows(F1_table,
+                        data.frame(Model = "Multinom") %>% bind_cols(F1_mn))
+
+F1_table %>% knitr::kable()
+```
+
+\newpage
+### Model based on "LDA" method:
+\vspace{12pt}
+
+```{r, warning = FALSE}
+# Fit the Model based on "LDA" method, predict, test, calculate F1 score for all classes
+fit_lda <- train(winner ~ ., method = "lda", data = train_set)
+pre_lda <- predict(fit_lda, test_set)
+F1_lda <- confusionMatrix(pre_lda, test_set$winner)$byClass[,"F1"]
+F1_lda <- as.data.frame(t(F1_lda)) %>% mutate(avg_F1_score = rowMeans(.))
+F1_lda
+```
+
+This is great. We have now a much higher average F1 score of 0.585 (58.5%) and the LDA model had predicted much better than all the previous models. We can see that for most classes the F1 score is well above the average 0.50 (a random guess value for one among two teams to be the match winner).
+
+Let us update our F1 table.
+
+
+
+```{r}
+# Make column names more readable
+colnames(F1_lda) = gsub("Class: ", "", colnames(F1_lda))
+# Update F1 table - continued.5
+F1_table <- bind_rows(F1_table,
+                        data.frame(Model = "LDA") %>% bind_cols(F1_lda))
+
+F1_table %>% knitr::kable()
+```
+
+\newpage
+### Model based on "Random Forest" method:
+\vspace{12pt}
+
+Next, we will see how the "Random Forest" method works, where we build more trees and use cross validation unlike "rpart", which is based on only one tree.
+
+
+
+```{r, message=FALSE}
+# Fit the Model based on "rf (Random Forest)" method, predict, test, 
+# calculate F1 score for all classes
+trainctrl <- trainControl(method="cv")
+fit_rf <- train(winner ~ ., method = "rf", data = train_set,  trControl=trainctrl)
+pre_rf <- predict(fit_rf, test_set)
+F1_rf <- confusionMatrix(pre_rf, test_set$winner)$byClass[,"F1"]
+F1_rf <- as.data.frame(t(F1_rf)) %>% mutate(avg_F1_score = rowMeans(.))
+F1_rf
+```
+
+Though "Random Forest" did a decent job and predicted for all classes, its performance is not as good as the "Multinom" or "LDA" methods..
+
+Let us update our F1 table and move to building and testing our final model, based on "KNN" method.
+
+
+
+```{r}
+# Make column names more readable
+colnames(F1_rf) = gsub("Class: ", "", colnames(F1_rf))
+# Update F1 table - continued.3
+F1_table <- bind_rows(F1_table,
+                        data.frame(Model = "Random Forest (rf)") %>% bind_cols(F1_rf))
+
+F1_table %>% knitr::kable()
+```
+
+\newpage
+### Model based on "KNN" method:
+\vspace{12pt}
+
+Now, for the last time, we build our final Model based on a slightly different technique, K Nearest Neighbors (KNN) method. Let us hope it improves our results.
+
+
+
+```{r}
+# Fit the Model based on "KNN" method, predict, test, calculate F1 score for all classes
+fit_knn <- train(winner ~ ., method = "knn", data = train_set)
+pre_knn <- predict(fit_knn, test_set)
+F1_knn <- confusionMatrix(pre_knn, test_set$winner)$byClass[,"F1"]
+F1_knn <- as.data.frame(t(F1_knn)) %>% mutate(avg_F1_score = rowMeans(.))
+F1_knn
+```
+
+KNN also predicted for all classes, however, the predictions and F1 score did not improve more than what LDA did.
+
+Below is our final updated F1 table for different models that we used for training and testing.
+
+
+
+```{r}
+# Make column names more readable
+colnames(F1_knn) = gsub("Class: ", "", colnames(F1_knn))
+# Update F1 table - Final
+F1_table <- bind_rows(F1_table,
+                        data.frame(Model = "KNN") %>% bind_cols(F1_knn))
+
+F1_table %>% knitr::kable()
+```
+
+\newpage
+# Results Discussion:          
+\vspace{12pt}
+
+We have set 2 objectives for this project, the first objective was to come out with a list of players based on their playing calibre (player_value) and the second objective was to develop a model to predict the winner of a match.
+
+For the 1st objective, we have selected the following 3 criteria as the basis:
+
+  1. Player's ability as a batsman in terms of strike rate and as a bowler in terms of economy rate. We called these players as top_rate_players.
+
+  2. Player's contribution as both batsman and bowler in the matches that their teams have won and lost. We called these players as top_contri_players.
+  
+  3. Player's ability as a batsman to have high strike rates against top economy bowlers and as a bowler to have low economy rates against top striking batsmen. We called these players as top_excel_players.
+  
+The resulting lists that we have got in all the above 3 cases are consistent with IPL's official statistics and facts and also that of other sports research entities.
+
+We have combined these 3 lists into one to arrive at the final list estimating the player value (calibre). We called these players as top_calibre_players. Again, this list is consistent with many other findings on IPL official statistics.
+
+**The main difference here to note is that this project is different from other researches from the fact that this project uniquely determines player calibre based on 3 very important criteria, which other findings/ research analysis did not do, hence is tremendously useful.**
+
+**The traditional approach to player selection was purely as a batsman or bowler or an all-rounder. What is required are players with the  ability to perform CONSISTANTLY good as as a STRIKE batsman and ECONOMIC bowler, a  drastically different approach. Hopefully, this project might change the thought process of team managements in selecting players for their franchises in IPL.**
+
+Below is the top 150 players' list.
+
+
+
+```{r}
+# Top 150 players by player value (Calibre)
+top_150_calibre_players
+```
+
+For the 2nd objective, we have selected a few variables from "matches" dataset based on our data analysis and intuition to predict the winner for a given match between 2 teams at a specific venue. We also have set certain data constraints and accordingly wrangled and pre-processed our data.
+
+Since we want to have a model that correctly, positively predicts a winner of a match, subject to other variables, our interest is specifically in "F1 score", which is a combination of "precision" and "recall (sensitivity)" metrics, rather than accuracy, sensitivity, specificity, precision or any other metric alone. We have decided to use average F1 score to compare the strength of different models that we have built.
+
+Building models, testing them for the accuracy or sensitivity or F1 score of predicted values is an iterative process, based on our understanding of the data, problem at hand, exploration and intuition.
+
+In fact, all the stages of data science project are iterative and include data visualization, analysis, model building & testing repeated, several times. In the process, we use various techniques like data wrangling, plotting, data organization, regression, machine learning and modeling.
+
+Accordingly, the approach we took was step-by-step, iterative and employing various analysis and model building techniques.
+
+Excepting "Naive Bayes" and "rpart", all our models predicted for all classes and produced an average F1 score. "LDA" seems to be the best model for this project due to its high average F1 score compared to the other models. However, if our interest is to just predict for "Mumbai Indians" as winners, "Multinom" method does a better job.
+
+The samples we have for different teams (number of observations) is not similar. Some teams have played much more matches than others. This introduces bias in our data and thus our models may not do effective job in predicting the winners. For example, "Chennai Super Kings", which is top consistant performing team did not play for 2 seasons. This fact could have probably reduced its prediction as the winner by some of the models in favour of other teams.
+
+Below table shows the F1 scores calculated by different models for different classes of "winner" in our test dataset.
+
+  
+
+```{r}
+# Final F1 table
+F1_table %>% knitr::kable()
+```
+
+**The advantage of these models developed in this project is that if the datasets on international matches/ teams are used, the models can be adopted to rank players by their playing calibre and predict winners of matches for international T20 matches/ teams too (not just to IPL). In fact, these models can be adopted for similar purposes for domestic matches at any level as long as the corresponding datasets are available**
+
+\newpage
+# Conclusion:          
+\vspace{12pt}
+
+It is time to conclude a few points about the project.
+
+- The main objective of this project to develop a model to list players by their calibre based on their performances in IPL T20 tournaments. Acoordingly, we have generated a list of players based on their playing calibre and ranked them. In the process we have also explored and unearthed some very interesting facts through statistics and visualisations. 
+
+
+- The other objective is to predict the winner of a match between 2 specific teams, subject to who wins the toss, what the toss decision is and which is the venue. We have achieved some good measure of success with "LDA", "Multinom" and "KNN" methods.
+
+
+  **The models that we have developed can help**  
+
+    **- IPL team managements to select best teams,** 
+
+  
+    **- enthrall cricket lovers with some interesting statistics and**     
+  
+    **- interested audience with some rewarding predictions on which team would win a match. One could particularly predict "Mumbai Indians" as the winner with relatively high certainity using "Multinom" model {or} other teams as the winners using "LDA" & a few other models, given a F1 score of more than 0.50, which is better than a guess.**    
+
+    **- The models developed can be adopted for international or domestic or any level of T20 matches/ teams.**
+    
+- There are several other minor or rare criteria that contributes a player value such as fielding, catching, captaining, involvement, wicket keeping, etc., Since our dataset did not contain much of the  related data, we were not employ the same at this point of time. 
+
+- The next logical step for this project is to gather additional data as mentioned in the above point and further work on the models and develop better and precise models.
+
+  One area for improvement is the list of players include several retired players. We can update the player list with players who are currently playing.
+
+  One other area is, in IPL T20 teams are restricted to recruit a certain maximum number of foreign players. Based on additional data, we can make 2 lists, one for Indian (domestic) players and one for foreign players, based on their value.
+
+
+
+
+
+\vspace{35pt}
+
+\begin{center}
+----------------------END----------------------
+\end{center}
